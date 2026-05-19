@@ -52,4 +52,4 @@ Cuando la metaheurística activa un elemento, el algoritmo realiza una **propaga
 * **Nombre:** Carlos Andrés Valenzuela Olivares
 * **Institución:** Universidad Diego Portales (UDP)
 * **Académico:** Estudiante de 4to año de Ingeniería Civil en Informática y Telecomunicaciones
-* **Áreas de Especialización:** Metaheurísticas de optimización combinatoria, análisis algorítmico, estructuras de datos avanzadas y desarrollo de software Fullstack.
+* **Áreas de Especialización e Interés:** Metaheurísticas de optimización combinatoria, análisis algorítmico, estructuras de datos avanzadas y desarrollo de software Fullstack.
