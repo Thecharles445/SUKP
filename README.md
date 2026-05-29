@@ -1,51 +1,30 @@
-# Optimización del Set Union Knapsack Problem (SUKP) mediante Inversión de Dominio
-
-Este proyecto implementa y analiza el Problema de la Mochila con Unión de Conjuntos (SUKP, por sus siglas en inglés), un desafío de optimización combinatoria NP-hard. A diferencia del problema de la mochila clásico, aquí los elementos del universo confieren beneficios solo cuando se completan los subconjuntos específicos que los requieren, modelando escenarios reales de presupuestos compartidos y sinergia de recursos.
-
----
-
-## El Núcleo del Problema: La Trampa del Peso Compartido
-
-En el SUKP, el universo está compuesto por elementos base (herramientas, infraestructura, etc.), cada uno con un peso asociado. Los beneficios, en cambio, pertenecen a conjuntos compuestos (proyectos o servicios). El desafío principal radica en que **múltiples conjuntos pueden requerir el mismo elemento base**.
-
-### La Analogía del Mundo Real
-Imagine que debe realizar dos proyectos en un jardín:
-* **Proyecto A:** Requiere un destornillador, un alicate y un rollo de cinta aisladora (15 gramos).
-* **Proyecto B:** Requiere un pelacables y **el mismo rollo de cinta aisladora** (15 gramos).
-
-Al empacar las herramientas en la mochila, el rollo de cinta se introduce **una sola vez**. Por lo tanto, la mochila incrementa su peso por el valor neto de esa herramienta (15g), independientemente de que sirva para activar uno, ambos o ningún proyecto. El peso es una propiedad física lineal de los elementos, mientras que el beneficio es una propiedad condicional de los conjuntos.
+# Práctica 1: Resolución del Set-Union Knapsack Problem (SUKP)
+**Autor:** [Carlos Andrés Valenzuela Olivares]
 
 ---
 
-## Evolución de la Solución Algorítmica
+##  Descripción del Proyecto
+Este repositorio contiene la implementación de la **Práctica 1**, enfocada en resolver el **Problema de la Mochila de la Unión de Conjuntos (SUKP)**, un problema de optimización combinatoria de clase NP-hard.
 
-El repositorio analiza esta lógica a través de dos fases de abstracción algorítmica:
+A diferencia del enfoque tradicional de la mochila, esta solución se aborda desde la **perspectiva de selección de combinaciones de conjuntos**.
 
-### Fase 1: El Modelo Conceptual (Evaluación Directa)
-Este primer enfoque traduce la analogía física a código utilizando variables primitivas aisladas. Su propósito es demostrar de forma explícita que el cálculo del peso y la validación de los beneficios deben ocurrir en canales de flujo completamente desacoplados.
+### El Enfoque Utilizado
+* **Los Conjuntos representan el Peso:** La mochila tiene una capacidad máxima. Activamos combinaciones de conjuntos base, donde cada conjunto tiene un peso único y fijo.
+* **Los Ítems representan el Beneficio:** Cada ítem otorga un valor monetario o beneficio, pero solo se "desbloquea" y se suma a la ganancia si **todos** los conjuntos que requiere han sido activados en la combinación actual.
 
-* **Gestión del Peso:** Se evalúa de manera lineal mediante condicionales directos sobre cada herramienta. Al no existir estructuras anidadas, el peso del elemento compartido se computa una única vez.
-* **Gestión del Beneficio:** Se valida mediante lógica booleana estricta (`&&`). Si un solo elemento requerido por el conjunto está ausente (valor `0`), la condición completa falla y el beneficio no se adjudica, reflejando fielmente la restricción del problema.
-
-### Fase 2: El Modelo Indexado Optimizado (Mapa Inverso y Contadores)
-Para escalar el problema a instancias masivas, la verificación booleana directa genera un cuello de botella de complejidad O(n * m) al tener que inspeccionar los requisitos de cada conjunto repetidamente. La Fase 2 introduce dos estructuras de datos avanzadas:
-
-1.  **El Mapa Inverso:** Un vector de vectores que invierte la jerarquía de los datos. En lugar de que el conjunto conozca sus elementos, **el elemento conoce a qué conjuntos pertenece**. Esto se calcula una sola vez en una fase de pre-procesamiento.
-2.  **El Vector de Faltantes:** Un arreglo dinámico que almacena cuántos elementos le faltan a cada conjunto para ser completado.
-
-Cuando la metaheurística activa un elemento, el algoritmo realiza una **propagación activa por eventos**: consulta la fila de ese elemento en el mapa inverso y decrementa de forma instantánea O(1) los contadores de los conjuntos afectados. Si un contador llega a cero, el beneficio se reclama inmediatamente. El algoritmo de evaluación se reduce a un único ciclo principal de orden de complejidad lineal O(m).
+Este modelo optimiza la búsqueda explotando las sinergias y los "descuentos en peso" cuando múltiples ítems comparten los mismos conjuntos base.
 
 ---
 
-## Análisis Comparativo de Complejidad
-
-| Dimensión | Enfoque Tradicional (Por Conjuntos) | Nuestro Enfoque (Inversión de Dominio) |
-| :--- | :--- | :--- |
-| **Variable de Decisión** | Selección de Conjuntos ($2^n$ estados) | Activación de Elementos ($2^m$ estados) |
-| **Operación de Peso** | Unión de conjuntos con filtrado de duplicados. | Suma aritmética lineal directa. |
-| **Evaluación de Fitness** | Complejidad alta y dependiente del tamaño de los conjuntos. | Complejidad optimizada a nivel de ciclo único O(m). |
+## Características
+* **Estructura Invertida:** Mapeo de relaciones Conjunto ➔ Ítems para una evaluación rápida.
+* **Cálculo Dinámico de Eficiencia:** Evaluación de combinaciones basada en la relación `Beneficio Nuevo / Peso del Conjunto`.
+* **Validación de Restricciones:** Control estricto de la capacidad máxima de la mochila.
 
 ---
+
+## 🛠️ Requisitos e Instalación
+*(Nota: Modifica esta sección según el lenguaje que uses, por ejemplo, Python)*
 
 ## Sobre el Autor
 
