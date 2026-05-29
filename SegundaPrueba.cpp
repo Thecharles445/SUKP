@@ -3,90 +3,58 @@
 
 using namespace std;
 
-struct Conjunto {
-    int beneficio;
-    vector<int> elementos_requeridos;
-};
-
 int main() {
-    // 1. DEFINICION DE LA INSTANCIA
-    vector<int> pesos_elementos;
-    pesos_elementos.push_back(10);
-    pesos_elementos.push_back(20);
-    pesos_elementos.push_back(15);
-    pesos_elementos.push_back(30);
-
-    int total_elementos = pesos_elementos.size();
-
-    vector<Conjunto> lista_conjuntos;
-
-    Conjunto c0;
-    c0.beneficio = 100;
-    c0.elementos_requeridos.push_back(0);
-    c0.elementos_requeridos.push_back(1);
-    c0.elementos_requeridos.push_back(2);
-    lista_conjuntos.push_back(c0);
-
-    Conjunto c1;
-    c1.beneficio = 50;
-    c1.elementos_requeridos.push_back(2);
-    c1.elementos_requeridos.push_back(3);
-    lista_conjuntos.push_back(c1);
-
-    int total_conjuntos = lista_conjuntos.size();
-
+    // 1. Pesos de las herramientas (Conjuntos: Indice 0, 1 y 2)
+    int peso_herramientas[3] = {8, 6, 12}; 
     
-    // PRE-PROCESAMIENTO: Construccion del Mapa Inverso
-    // Se ejecuta UNA SOLA VEZ antes de iniciar la metaheuristica
+    // 2. Beneficios de los proyectos (Items: Indice 0 y 1)
+    int beneficio_proyectos[2] = {150, 200};
     
-    vector<vector<int>> mapa_inverso(total_elementos);
-    for (int j = 0; j < total_conjuntos; j++) {
-        for (int k = 0; k < lista_conjuntos[j].elementos_requeridos.size(); k++) {
-            int id_elemento = lista_conjuntos[j].elementos_requeridos[k];
-            mapa_inverso[id_elemento].push_back(j); 
+    // Limite de espacio en el disco duro (Capacidad de la mochila)
+    int espacio_maximo = 20;
+
+    // 3. NUESTRA DECISION: ¿Que herramientas vamos a activar?
+    // Decidimos activar la Herramienta 1 (Servidor) y la Herramienta 2 (IA).
+    // Dejamos la Herramienta 0 (Base de datos) apagada.
+    bool herramientas_activas[3] = {false, true, true};
+
+    // 4. PASO LOGICO 1: Sumar el peso de lo que activamos
+    int espacio_utilizado = 0;
+    for (int i = 0; i < 3; i++) {
+        if (herramientas_activas[i] == true) {
+            espacio_utilizado += peso_herramientas[i]; // Suma 6 + 12 = 18 GB
         }
     }
 
-    // 2. SOLUCION A EVALUAR
-    vector<int> solucion;
-    solucion.push_back(1); 
-    solucion.push_back(1); 
-    solucion.push_back(1); 
-    solucion.push_back(0);
+    cout << "Espacio total utilizado en disco: " << espacio_utilizado << " GB" << endl;
 
-    // =========================================================================
-    // MOTOR DE EVALUACION OPTIMIZADO
-    // =========================================================================
-    int peso_total = 0;
-    int beneficio_total = 0;
-
-    // Inicializacion del vector de control de faltantes
-    vector<int> faltantes(total_conjuntos);
-    for (int j = 0; j < total_conjuntos; j++) {
-        faltantes[j] = lista_conjuntos[j].elementos_requeridos.size();
+    // 5. PASO LOGICO 2: Validar si cabe en nuestro disco duro
+    if (espacio_utilizado > espacio_maximo) {
+        cout << "Error: No hay suficiente espacio en el disco duro." << endl;
+        return 0; // Detiene el programa porque la combinacion no es valida
     }
 
-    // Evaluacion conjunta en un solo ciclo principal O(m)
-    for (int i = 0; i < total_elementos; i++) {
-        if (solucion[i] == 1) {
-            peso_total += pesos_elementos[i]; // Costo lineal
+    // 6. PASO LOGICO 3 y 4: Escanear que proyectos se desbloquean y sumar ganancias
+    int ganancias_totales = 0;
 
-            // Notificacion asincrona a los conjuntos dependientes
-            for (int idx = 0; idx < mapa_inverso[i].size(); idx++) {
-                int id_conjunto_afectado = mapa_inverso[i][idx];
-                faltantes[id_conjunto_afectado]--;
-
-                // Verificacion de satisfaccion en tiempo constante O(1)
-                if (faltantes[id_conjunto_afectado] == 0) {
-                    beneficio_total += lista_conjuntos[id_conjunto_afectado].beneficio;
-                }
-            }
-        }
+    // Evaluar Proyecto 0: Requiere Herramienta 0 Y Herramienta 1
+    if (herramientas_activas[0] == true && herramientas_activas[1] == true) {
+        ganancias_totales += beneficio_proyectos[0];
+        cout << "Proyecto 0 (Tienda Online) lanzado. Ganancia: +" << beneficio_proyectos[0] << endl;
+    } else {
+        cout << "Proyecto 0 no se pudo lanzar (Faltan herramientas)." << endl;
     }
 
-    // 4. DESPLIEGUE DE RESULTADOS
-    cout << "Peso total: " << peso_total << " kg" << endl;
-    cout << "Beneficio total: $" << beneficio_total << endl;
+    // Evaluar Proyecto 1: Requiere Herramienta 1 Y Herramienta 2
+    if (herramientas_activas[1] == true && herramientas_activas[2] == true) {
+        ganancias_totales += beneficio_proyectos[1];
+        cout << "Proyecto 1 (Chatbot Avanzado) lanzado. Ganancia: +" << beneficio_proyectos[1] << endl;
+    } else {
+        cout << "Proyecto 1 no se pudo lanzar (Faltan herramientas)." << endl;
+    }
+
+    // 7. Resultado final de la combinacion elegida
+    cout << "Ganancia total de esta combinacion: $" << ganancias_totales << endl;
 
     return 0;
 }
