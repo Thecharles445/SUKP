@@ -23,8 +23,6 @@ Este modelo optimiza la búsqueda explotando las sinergias y los "descuentos en 
 
 ---
 
-## 🛠️ Requisitos e Instalación
-*(Nota: Modifica esta sección según el lenguaje que uses, por ejemplo, Python)*
 
 ## Sobre el Autor
 
