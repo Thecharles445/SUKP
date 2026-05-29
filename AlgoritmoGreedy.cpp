@@ -43,7 +43,7 @@ int main() {
     }
     if (conjuntos_activos[1] == true && conjuntos_activos[2] == true) {
         beneficio_total += beneficios_items[1];
-        cout << "¡Item 1 desbloqueado! Ganaste: " << beneficios_items[1] << endl;
+        cout << "¡Item listo, tienes : " << beneficios_items[1] << endl;
     }
 
     cout << "Beneficio total obtenido por Greedy: " << beneficio_total << endl;
