@@ -51,6 +51,15 @@ Este algoritmo prioriza la **velocidad de ejecución**, construyendo una soluci�
 ---
 ---
 
+### 3. Enfoque Híbrido: Branch and Bound (Ramificación y Acotación)
+Este algoritmo combina lo mejor de los dos mundos: garantiza una **solución exacta** (como el Bitmask) pero con una **velocidad ultra rápida** (cercana al Greedy), convirtiéndose en la opción más eficiente para escalar el problema de forma determinista.
+
+* **¿Cómo funciona?** Modela el espacio de soluciones como un **Árbol de Decisión Binario** recursivo. En cada nivel del árbol, el algoritmo toma una bifurcación: la rama izquierda asume que el conjunto actual se apaga (`false`) y la rama derecha asume que se enciende (`true`).
+* **Optimización aplicada (Poda por Peso):** A diferencia del Bitmask que explora todo a ciegas, este enfoque calcula el peso acumulado antes de abrir una rama. Si el peso supera la capacidad de la mochila, **la rama completa se corta (poda)**, ahorrándole a la computadora millones de operaciones recursivas en subárboles inválidos.
+* **Complejidad:** En el peor de los casos es $\mathcal{O}(2^N)$, pero en la práctica resuelve instancias grandes en milisegundos debido a la alta tasa de poda.
+
+---
+
 ## Características
 * **Estructura Invertida:** Mapeo de relaciones Conjunto ➔ Ítems para una evaluación rápida.
 * **Cálculo Dinámico de Eficiencia:** Evaluación de combinaciones basada en la relación `Beneficio Nuevo / Peso del Conjunto`.
