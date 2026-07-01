@@ -67,6 +67,18 @@ Este algoritmo combina lo mejor de los dos mundos: garantiza una **solución exa
 
 ---
 
+### 4. Enfoque Metaheurístico: Algoritmo Probabilístico con Lista Restringida de Candidatos (RCL)
+Este algoritmo introduce **aleatoriedad controlada** (estocasticidad) sobre el enfoque basado en conjuntos para romper la rigidez del Greedy determinista, permitiendo explorar caminos alternativos en el espacio de soluciones y escapar de óptimos locales.
+
+* **¿Cómo funciona?** En lugar de activar directamente el "mejor" conjunto de forma automática, el algoritmo evalúa los conjuntos disponibles mediante una **Métrica de Selección Híbrida (Score)** regulada por un parámetro $\alpha$:
+  
+  $$\text{score}(j) = \alpha \cdot M(j) + (1 - \alpha) \cdot P(j)$$
+
+  Donde $M(j)$ representa el beneficio marginal dinámico (rentabilidad inmediata en el peso) y $P(j)$ es el potencial estático absoluto del conjunto a largo plazo. 
+* **La Lista Restringida de Candidatos (RCL):** Tras calcular los puntajes, el algoritmo ordena los conjuntos de mayor a menor y aísla los $K$ mejores componentes en una lista selecta (RCL). Finalmente, el programa **elige un conjunto al azar dentro de este grupo (Top-$K$)** para activarlo e ingresarlo a la mochila.
+* **¿Por qué se implementó?** El Greedy inteligente clásico siempre tomará la misma decisión ante los mismos datos (es miope). Al añadir la RCL, si el programa se ejecuta múltiples veces sobre una instancia masiva, descubrirá combinaciones y "combos" de conjuntos altamente eficientes que un criterio puramente voraz habría ignorado por completo.
+* **Complejidad:** Polinomial $\mathcal{O}(N^2 \cdot M)$ por cada iteración. Es una solución de alta fidelidad, ideal para esquemas de inicialización en metaheurísticas avanzadas.
+
 
 ## Sobre el Autor
 
