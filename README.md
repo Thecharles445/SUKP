@@ -37,18 +37,6 @@ Este algoritmo prioriza la **velocidad de ejecución**, construyendo una soluci�
 * **Sinergias Dinámicas:** La puntuación se recalcula en cada paso. Al activar un conjunto, los ítems compartidos que quedan "a mitad de requisitos" aumentan la prioridad de los conjuntos restantes, forzando al algoritmo a cerrar "combos" de alto beneficio.
 * **Complejidad:** Polinomial $\mathcal{O}(N^2 \cdot M)$. Ultra rápido y escalable para instancias masivas con miles de datos en la vida real.
 
----
-
-### Comparativa de Enfoques Iniciales
-
-| Característica | Bitmask DP | Greedy Inteligente |
-| :--- | :--- | :--- |
-| **Tipo de Solución** | **Exacta** (Garantiza el 100% de optimización) | **Aproximada** (Buena calidad en milisegundos) |
-| **Manejo de Combos** | Perfecto (Revisa todas las sinergias) | Heurístico (Sigue la densidad del ratio) |
-| **Escalabilidad** | Limitada (Sufre con más de 25 conjuntos) | Alta (Soporta miles de registros) |
-| **Uso de Memoria** | Mínimo (Usa enteros como banderas de bits) | Bajo (Usa vectores dinámicos) |
-
----
 
 ### 3. Enfoque Exacto: Árbol Binario (Ramificación y Acotación)
 Este algoritmo modela el espacio de soluciones como un **Árbol de Decisión Binario** recursivo. En cada nivel del árbol, toma una bifurcación: la rama izquierda asume que el conjunto se apaga (`false`) y la rama derecha que se enciende (`true`).
