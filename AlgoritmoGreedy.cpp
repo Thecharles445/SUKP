@@ -28,7 +28,7 @@ int main() {
     int m = 0, n = 0, capacidad_maxima = 0;
     string linea;
 
-    // 1. Parsear el encabezado de forma robusta buscando m=, n= y size=
+    // 1. Parsear el encabezado 
     while (getline(archivo, linea)) {
         size_t pos_m = linea.find("m=");
         if (pos_m != string::npos) {
