@@ -79,7 +79,7 @@ Para romper con el estancamiento en óptimos locales planos característicos de 
 
 ---
 
-### 6. Enfoque de Búsqueda Local: Hill Climbing (Ascenso de Colinas)
+### 6. Enfoque de Búsqueda Local: Hill Climbing 
 Este algoritmo implementa una estrategia de optimización iterativa enfocada en refinar y mejorar una solución ya existente a través de exploraciones en su vecindario inmediato.
 
 * **¿Cómo funciona?** Comienza a partir de una solución constructiva base y entra en un bucle adaptativo de **operaciones de intercambio (Moves / Swaps)**. En cada paso, el algoritmo evalúa apagar un conjunto actualmente activo y encender uno inactivo.
