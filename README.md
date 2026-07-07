@@ -73,18 +73,4 @@ Este algoritmo implementa una estrategia de optimización iterativa enfocada en 
 * **¿Cómo funciona?** Comienza a partir de una solución constructiva base y entra en un bucle adaptativo de **operaciones de intercambio (Moves / Swaps)**. En cada paso, el algoritmo evalúa apagar un conjunto actualmente activo y encender uno inactivo.
 * **Criterio de Aceptación:** El intercambio se consolida únicamente si la nueva configuración respeta la capacidad máxima de la mochila y genera un incremento estricto en el beneficio total ($Z$). El algoritmo se detiene inmediatamente cuando no encuentra ningún vecino capaz de mejorar la colina actual, garantizando un óptimo local de manera rápida y eficiente.
 
----
 
-## Características
-* **Estructura Invertida:** Mapeo de relaciones Conjunto ➔ Ítems para una evaluación rápida.
-* **Cálculo Dinámico de Eficiencia:** Evaluación de combinaciones basada en la relación `Beneficio Nuevo / Peso del Conjunto`.
-* **Validación de Restricciones:** Control estricto de la capacidad máxima de la mochila.
-
----
-
-## Sobre el Autor
-
-* **Nombre:** Carlos Andrés Valenzuela Olivares
-* **Institución:** Universidad Diego Portales (UDP)
-* **Académico:** Estudiante de 4to año de Ingeniería Civil en Informática y Telecomunicaciones
-* **Áreas de Especialización e Interés:** Metaheurísticas de optimización combinatoria, análisis algorítmico, estructuras de datos avanzadas y desarrollo de software Fullstack.
