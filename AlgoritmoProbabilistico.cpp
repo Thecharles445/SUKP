@@ -1,111 +1,178 @@
 #include <iostream>
+#include <iostream>
+#include <fstream>
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <chrono> 
 
 using namespace std;
 
-// Estructura para ordenar los candidatos en la RCL
 struct Candidato {
     int idx;
     double score;
 };
 
-// Funcion de comparacion para ordenar la RCL descendentemente
 bool compararCandidatos(const Candidato& a, const Candidato& b) {
     return a.score > b.score;
 }
 
 int main() {
-    // Inicializar semilla aleatoria
     srand(time(0));
 
-    // Datos base de tu problema
-    const int N = 3; // Conjuntos
-    const int M = 2; // Items
-    int pesos_conjuntos[N] = {10, 5, 7}; 
-    int beneficios_items[M] = {100, 40};
-    int capacidad_maxima = 20;
-
-    int matriz_requisitos[M][N] = {
-        {1, 1, 0}, // Item 0: Conjunto 0 y 1
-        {0, 1, 1}  // Item 1: Conjunto 1 y 2
-    };
-
+    string archivo_instancia = "sukp_600_585_0.10_0.75.txt"; 
+    ifstream archivo(archivo_instancia);
     
-    double ALPHA = 0.7; // Balance: 0.7 marginal, 0.3 estatico
-    int K = 2;          // Tamaño de la lista de mejores candidatos (RCL)
-
-    // Estado del problema
-    bool conjuntos_activos[N] = {false, false, false};
-    int peso_actual = 0;
-
-    cout << "=== EJECUTANDO ALGORITMO PROBABILISTICO (RCL) ===" << endl;
-
-    // Bucle para activar conjuntos uno a uno
-    for (int paso = 0; paso < N; paso++) {
-        vector<Candidato> candidatos;
-
-        // 1. Evaluar todos los conjuntos disponibles para calcular su Score
-        for (int j = 0; j < N; j++) {
-            if (conjuntos_activos[j]) continue; // Saltar si ya esta activo
-
-            // Comprobar si cabe en la mochila
-            if (peso_actual + pesos_conjuntos[j] > capacidad_maxima) continue;
-
-            // Componente Marginal (M) dinamico
-            int beneficio_marginal = 0;
-            for (int i = 0; i < M; i++) {
-                if (matriz_requisitos[i][j] == 1) {
-                    beneficio_marginal += beneficios_items[i];
-                }
-            }
-            double M_j = (double)beneficio_marginal / pesos_conjuntos[j];
-
-            // Componente Estatico (P)  Basado en el beneficio total absoluto del item
-            double P_j = 0;
-            for (int i = 0; i < M; i++) {
-                if (matriz_requisitos[i][j] == 1) {
-                    P_j += beneficios_items[i]; // Estructura base
-                }
-            }
-            
-
-            // Formula
-            double score_final = (ALPHA * M_j) + ((1.0 - ALPHA) * P_j);
-            
-            candidatos.push_back({j, score_final});
-        }
-
-        // Si no hay candidatos factibles que quepan, se termina el proceso
-        if (candidatos.empty()) break;
-
-        // 2. Ordenar candidatos por su score de forma descendente
-        sort(candidatos.begin(), candidatos.end(), compararCandidatos);
-
-        // Ajustar K en caso de que queden menos candidatos que el valor de K
-        int k_actual = min(K, (int)candidatos.size());
-
-        // 3. Seleccionar uno al azar dentro de los K mejores 
-        int idx_elegido_en_rcl = rand() % k_actual;
-        int conjunto_seleccionado = candidatos[idx_elegido_en_rcl].idx;
-
-        // Activar el conjunto elegido de forma estocastica
-        conjuntos_activos[conjunto_seleccionado] = true;
-        peso_actual += pesos_conjuntos[conjunto_seleccionado];
-
-        cout << "-> Activado Conjunto " << conjunto_seleccionado 
-             << " (Elegido al azar del Top " << k_actual << " de la RCL)" 
-             << " | Peso acumulado: " << peso_actual << "/" << capacidad_maxima << endl;
+    if (!archivo.is_open()) {
+        cerr << "Error: No se pudo abrir el archivo." << endl;
+        return 1;
     }
 
-    // --- EVALUACION DE RESULTADOS ---
-    int beneficio_total = 0;
-    cout << "\n=== RESULTADO FINAL DE LA RONDA PROBABILISTICA ===" << endl;
-    if (conjuntos_activos[0] && conjuntos_activos[1]) beneficio_total += beneficios_items[0];
-    if (conjuntos_activos[1] && conjuntos_activos[2]) beneficio_total += beneficios_items[1];
+    int m = 0, n = 0, capacidad_maxima = 0;
+    string linea;
 
-    cout << "Beneficio total obtenido: " << beneficio_total << endl;
+    while (getline(archivo, linea)) {
+        size_t pos_m = linea.find("m=");
+        if (pos_m != string::npos) {
+            m = stoi(linea.substr(pos_m + 2));
+            
+            size_t pos_n = linea.find("n=");
+            if (pos_n != string::npos) {
+                n = stoi(linea.substr(pos_n + 2));
+            }
+            
+            size_t pos_size = linea.find("size=");
+            if (pos_size != string::npos) {
+                capacidad_maxima = stoi(linea.substr(pos_size + 5));
+            }
+            break; 
+        }
+    }
+
+    if (m == 0 || n == 0 || capacidad_maxima == 0) {
+        cerr << "Error al parsear el encabezado del archivo." << endl;
+        return 1;
+    }
+
+    while (getline(archivo, linea)) {
+        if (linea.find("profit") != string::npos) break;
+    }
+    
+    vector<int> beneficios_items(m);
+    for (int i = 0; i < m; i++) {
+        archivo >> beneficios_items[i];
+    }
+    
+    string token_basura;
+    getline(archivo, token_basura);
+
+    while (getline(archivo, linea)) {
+        if (linea.find("weight") != string::npos) break;
+    }
+
+    vector<int> pesos_conjuntos(n);
+    for (int j = 0; j < n; j++) {
+        archivo >> pesos_conjuntos[j];
+    }
+    
+    getline(archivo, token_basura);
+
+    vector<vector<int>> matriz_requisitos(m, vector<int>(n));
+    vector<int> conjuntos_por_item(m, 0);
+    
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            archivo >> matriz_requisitos[i][j];
+            if (matriz_requisitos[i][j] == 1) {
+                conjuntos_por_item[i]++;
+            }
+        }
+    }
+    archivo.close();
+
+    cout << "=== INSTANCIA CARGADA CORRECTAMENTE ===" << endl;
+    cout << "Items (M): " << m << " | Conjuntos (N): " << n << " | Capacidad: " << capacidad_maxima << endl;
+    cout << "=== EJECUTANDO ALGORITMO PROBABILISTICO MULTI-RONDA (RCL) ===" << endl;
+    
+    // =========================================================================
+    // INICIO DE LA MEDICIÓN DE TIEMPO GLOBAL
+    // =========================================================================
+    auto inicio = chrono::high_resolution_clock::now();
+
+    int mejor_beneficio_global = 0;
+    int mejor_peso_global = 0;
+    int total_intentos = 20; // 20 ejecuciones independientes para explorar el espacio combinatorio
+
+    for (int intento = 1; intento <= total_intentos; intento++) {
+        vector<bool> conjuntos_activos(n, false);
+        int peso_actual = 0;
+
+        // Estructura de control dinámica por ronda
+        while (true) {
+            vector<Candidato> candidatos;
+
+            for (int j = 0; j < n; j++) {
+                if (conjuntos_activos[j]) continue; 
+                if (peso_actual + pesos_conjuntos[j] > capacidad_maxima) continue;
+
+                double beneficio_estimado = 0;
+                for (int i = 0; i < m; i++) {
+                    if (matriz_requisitos[i][j] == 1) {
+                        if (conjuntos_por_item[i] > 0) {
+                            // Score estocástico basado en el aporte potencial fraccionario de cada conjunto
+                            beneficio_estimado += (double)beneficios_items[i] / conjuntos_por_item[i];
+                        }
+                    }
+                }
+                
+                double score_final = beneficio_estimado / pesos_conjuntos[j];
+                candidatos.push_back({j, score_final});
+            }
+
+            if (candidatos.empty()) break;
+
+            sort(candidatos.begin(), candidatos.end(), compararCandidatos);
+
+            // K = 30 para maximizar la exploración estocástica y alejarse del Greedy rígido
+            int k_actual = min(30, (int)candidatos.size()); 
+            int idx_elegido = rand() % k_actual;
+            int conjunto_seleccionado = candidatos[idx_elegido].idx;
+
+            conjuntos_activos[conjunto_seleccionado] = true;
+            peso_actual += pesos_conjuntos[conjunto_seleccionado];
+        }
+
+        // Evaluación final de la ronda actual
+        int beneficio_total_intento = 0;
+        for (int i = 0; i < m; i++) {
+            bool item_completo = true;
+            for (int j = 0; j < n; j++) {
+                if (matriz_requisitos[i][j] == 1 && !conjuntos_activos[j]) {
+                    item_completo = false;
+                    break;
+                }
+            }
+            if (item_completo) {
+                beneficio_total_intento += beneficios_items[i];
+            }
+        }
+
+        if (beneficio_total_intento > mejor_beneficio_global) {
+            mejor_beneficio_global = beneficio_total_intento;
+            mejor_peso_global = peso_actual;
+        }
+    }
+
+    
+    auto fin = chrono::high_resolution_clock::now();
+    chrono::duration<double> tiempo_total = fin - inicio;
+
+    cout << "\n=== RESULTADO FINAL DE LAS RONDAS PROBABILISTICAS ===" << endl;
+    cout << "Mejor Peso acumulado final encontrado: " << mejor_peso_global << " / " << capacidad_maxima << endl;
+    cout << "Mejor Beneficio total obtenido tras " << total_intentos << " intentos: " << mejor_beneficio_global << endl;
+    cout << "Tiempo de ejecucion total del algoritmo: " << tiempo_total.count() << " segundos." << endl;
+
     return 0;
 }
