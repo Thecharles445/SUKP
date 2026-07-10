@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <chrono> // <-- Librería añadida para medir tiempo de alta precisión
 
 using namespace std;
 
@@ -17,7 +18,7 @@ bool compararPesos(const Conjunto& a, const Conjunto& b) {
 }
 
 int main() {
-    string archivo_instancia = "sukp_585_600_0.15_0.85.txt"; 
+    string archivo_instancia = "sukp_1000_1000_0.15_0.85.txt"; 
     ifstream archivo(archivo_instancia);
     
     if (!archivo.is_open()) {
@@ -28,7 +29,7 @@ int main() {
     int m = 0, n = 0, capacidad_maxima = 0;
     string linea;
 
-    // 1. Parsear el encabezado 
+    // 1. Parsear el encabezado de forma robusta buscando m=, n= y size=
     while (getline(archivo, linea)) {
         size_t pos_m = linea.find("m=");
         if (pos_m != string::npos) {
@@ -92,6 +93,11 @@ int main() {
     cout << "Items (M): " << m << " | Conjuntos (N): " << n << " | Capacidad: " << capacidad_maxima << endl;
     cout << "=== EJECUTANDO LOGICA GREEDY (Por peso mas liviano) ===" << endl;
 
+    // =========================================================================
+    // INICIO DE LA MEDICIÓN DE TIEMPO
+    // =========================================================================
+    auto inicio = chrono::high_resolution_clock::now();
+
     vector<bool> conjuntos_activos(n, false);
     int peso_total = 0;
 
@@ -118,12 +124,17 @@ int main() {
             }
         }
         if (item_completo) {
+            
             beneficio_total += beneficios_items[i];
         }
     }
 
+    auto fin = chrono::high_resolution_clock::now();
+    chrono::duration<double> tiempo_total = fin - inicio;
+
     cout << "Peso acumulado final: " << peso_total << " / " << capacidad_maxima << endl;
     cout << "Beneficio total obtenido por Greedy: " << beneficio_total << endl;
+    cout << "Tiempo de ejecucion del algoritmo: " << tiempo_total.count() << " segundos." << endl;
 
     return 0;
 }
