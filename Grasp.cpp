@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <chrono> 
 
 using namespace std;
 
@@ -65,6 +66,11 @@ int main() {
 
     cout << "=== INSTANCIA CARGADA CORRECTAMENTE ===" << endl;
     cout << "=== EJECUTANDO MULTI-START GRASP CON BASE ALEATORIA ===" << endl;
+
+    // =========================================================================
+    // INICIO DE LA MEDICIÓN DE TIEMPO GLOBAL DE LA METAHEURÍSTICA
+    // =========================================================================
+    auto inicio = chrono::high_resolution_clock::now();
 
     int mejor_beneficio_global = 0;
     int mejor_peso_global = 0;
@@ -129,9 +135,14 @@ int main() {
         }
     }
 
+    
+    auto fin = chrono::high_resolution_clock::now();
+    chrono::duration<double> tiempo_total = fin - inicio;
+
     cout << "\n=== RESULTADO FINAL DE MULTI-START GRASP ===" << endl;
     cout << "Peso consumido final: " << mejor_peso_global << " / " << capacidad_maxima << endl;
     cout << "Beneficio total obtenido (Z): " << mejor_beneficio_global << endl;
+    cout << "Tiempo de ejecucion total del algoritmo: " << tiempo_total.count() << " segundos." << endl;
 
     return 0;
 }
